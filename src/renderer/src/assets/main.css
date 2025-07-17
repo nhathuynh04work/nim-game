@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Scroll bar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 100, 100, 0.5);
+    border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(200, 200, 200, 0.3);
+}
+
+/* Pagination button of Statistics table */
+.rdt_Pagination {
+    color: #e4e4e7; /* Light zinc color for text */
+}
+
+.rdt_Pagination button {
+    color: #a1a1aa !important; /* Force white-ish arrows */
+    fill: #a1a1aa !important; /* For SVG icons */
+}
+
+.rdt_Pagination button:disabled {
+    color: #52525b !important; /* zinc-600 for disabled */
+    fill: #52525b !important;
+}
