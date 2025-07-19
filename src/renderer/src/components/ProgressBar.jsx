@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { formatTime } from "../helpers/formatTime";
 
+// Handle ticking time
 function ProgressBar({ side, isActive, time, setTime, timeLimit, color, paused }) {
     useEffect(() => {
+        console.log(time, timeLimit, !isActive, paused);
         if (!isActive || time <= 0 || paused) return;
 
         const timer = setInterval(() => {
@@ -18,7 +20,7 @@ function ProgressBar({ side, isActive, time, setTime, timeLimit, color, paused }
         return () => clearInterval(timer);
     }, [isActive, time, setTime, paused]);
 
-    const percentRemaining = Math.max((time / timeLimit) * 100, 0);
+    const percentRemaining = timeLimit == 99 ? 100 : Math.max((time / timeLimit) * 100, 0);
 
     const getFillColor = () => {
         if (percentRemaining > 66) {
@@ -50,7 +52,7 @@ function ProgressBar({ side, isActive, time, setTime, timeLimit, color, paused }
                     />
 
                     <div className="relative z-10 font-mono font-bold text-black dark:text-white">
-                        {formatTime(time)}
+                        {timeLimit == 99 ? "No limit" : formatTime(time)}
                     </div>
                 </>
             )}

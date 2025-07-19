@@ -1,6 +1,6 @@
 function Filter({ filterMode, onFilterChange }) {
     return (
-        <div className="mb-4 flex gap-4 items-center">
+        <div className="flex gap-4 items-center">
             <label className="font-medium text-zinc-800 dark:text-zinc-100">Filter by Mode:</label>
             <select
                 value={filterMode}

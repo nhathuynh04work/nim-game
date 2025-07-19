@@ -21,32 +21,10 @@ function GameArea({
     selectedPileIndex,
     setSelectedPileIndex,
     selectedObjectIndex,
-    setSelectedObjectIndex
+    setSelectedObjectIndex,
+    highlightPosition,
+    setHighlightPosition
 }) {
-    const handleSelect = (pileIndex, objectIndex) => {
-        setSelectedPileIndex(pileIndex);
-        setSelectedObjectIndex(objectIndex);
-    };
-
-    const handleRemove = () => {
-        if (selectedPileIndex === null || selectedObjectIndex === null) {
-            toast.error("Select an object before removing!");
-            return;
-        }
-
-        setPiles((prevPiles) => {
-            const updated = prevPiles.map((count, i) => {
-                if (i !== selectedPileIndex) return count;
-                const numToRemove = count - selectedObjectIndex;
-                return Math.max(0, count - numToRemove);
-            });
-
-            return updated.filter((count) => count > 0);
-        });
-
-        resetSelected();
-    };
-
     const getAutomaticMove = (difficulty = "easy") => {
         if (isComputerTurn && difficulty === "hard") {
             return getOptimalMove(piles);
@@ -70,6 +48,11 @@ function GameArea({
     };
 
     const removeSelectedObjects = (pileIndex, objectIndex) => {
+        if (pileIndex === null || objectIndex === null) {
+            toast.error("Select an object before removing!");
+            return;
+        }
+
         setPiles((prev) => {
             const updated = [...prev];
             const count = updated[pileIndex];
@@ -81,7 +64,7 @@ function GameArea({
 
     // When time runs out
     useEffect(() => {
-        if (time > 0 || isComputerTurn || piles.length === 0) return;
+        if (time > 0 || isComputerTurn || piles.length === 0 || timeLimit == 99) return;
 
         const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -123,10 +106,12 @@ function GameArea({
         }
     }, [isComputerTurn, time]);
 
-    // When piles updated, switch turn
+    // When piles updated, switch turn and reset selected
     useEffect(() => {
-        if (arraysEqual(piles, initialPiles)) return; // for initial render
+        if (arraysEqual(piles, initialPiles) || piles.length === 0) return; // for initial render
 
+        setHighlightPosition(null);
+        resetSelected();
         switchTurn();
     }, [piles]);
 
@@ -142,13 +127,14 @@ function GameArea({
                         selectedObjectIndex={
                             index === selectedPileIndex ? selectedObjectIndex : null
                         }
-                        onSelect={handleSelect}
+                        onSelect={selectObjects}
                         disabled={disabled}
+                        highlightPosition={highlightPosition}
                     />
                 ))}
             </div>
             <Button
-                onClick={handleRemove}
+                onClick={() => removeSelectedObjects(selectedPileIndex, selectedObjectIndex)}
                 disabled={disabled}
                 className="bg-zinc-200 text-zinc-900 hover:bg-zinc-300
         dark:bg-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-600"

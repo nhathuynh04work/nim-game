@@ -21,6 +21,26 @@ const timeLimitOptions = [
     {
         title: "20 seconds",
         value: "20"
+    },
+    {
+        title: "25 seconds",
+        value: "25"
+    },
+    {
+        title: "30 seconds",
+        value: "30"
+    },
+    {
+        title: "45 seconds",
+        value: "45"
+    },
+    {
+        title: "60 seconds",
+        value: "60"
+    },
+    {
+        title: "No limit",
+        value: "99"
     }
 ];
 
@@ -131,7 +151,15 @@ function GameSetup() {
             </div>
 
             <Button
-                className="w-full mt-20 py-3 border border-green-800 text-green-800 bg-transparent hover:bg-green-800 hover:text-white dark:hover:text-zinc-200 transition-colors duration-200"
+                className="w-full mt-20 py-3 
+               border border-indigo-600 text-indigo-600 
+               bg-transparent 
+               hover:bg-indigo-600 hover:text-white 
+               hover:shadow-[0_0_12px_rgba(99,102,241,0.5)] 
+               dark:border-indigo-400 dark:text-indigo-400 
+               dark:hover:bg-indigo-400 dark:hover:text-zinc-900 
+               dark:hover:shadow-[0_0_12px_rgba(129,140,248,0.6)] 
+               transition-all duration-200"
                 onClick={handleStart}
             >
                 Start New Game

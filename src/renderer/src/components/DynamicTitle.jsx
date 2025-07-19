@@ -5,14 +5,27 @@ export default function DynamicTitle() {
     const location = useLocation();
 
     useEffect(() => {
+        const path = location.pathname;
+
         const titles = {
             "/": "Home",
             "/game": "Play Game",
-            "/guidelines": "Guidelines",
-            "/statistics": "Statistics"
+            "/match":
+                location.state?.mode === "vsComputer" ? "Play with Computer" : "Play with Player",
+            "/statistics": "Statistics",
+            "/documentation": "Documentation",
+            "/documentation/overview": "Overview",
+            "/documentation/rules": "Rules",
+            "/documentation/demo": "Demo",
+            "/documentation/faqs": "FAQs",
+            "/documentation/credits": "Credits",
+            "/documentation/author": "About the Author"
         };
 
-        document.title = titles[location.pathname] || "My App";
+        const baseTitle = "NIM Game";
+        const pageTitle = titles[path] ? `${titles[path]} | ${baseTitle}` : baseTitle;
+
+        document.title = pageTitle;
     }, [location.pathname]);
 
     return null;

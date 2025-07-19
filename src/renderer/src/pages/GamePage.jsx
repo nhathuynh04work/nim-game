@@ -12,14 +12,16 @@ function GamePage() {
     }, []);
 
     return (
-        <div>
-            <Heading>{savedMatch ? "Continue Playing?" : "New Game"}</Heading>
+        <div className="flex-1 p-12 overflow-auto">
+            <div className="p-6">
+                <Heading>{savedMatch ? "Continue Playing?" : "New Game"}</Heading>
 
-            {savedMatch ? (
-                <ContinuePlaying savedMatch={savedMatch} setSavedMatch={setSavedMatch} />
-            ) : (
-                <GameSetup />
-            )}
+                {savedMatch ? (
+                    <ContinuePlaying savedMatch={savedMatch} setSavedMatch={setSavedMatch} />
+                ) : (
+                    <GameSetup />
+                )}
+            </div>
         </div>
     );
 }

@@ -14,23 +14,23 @@ export function AudioProvider({ children }) {
 
     const background = useRef(
         new Howl({
-            src: ["/sounds/background.mp3"],
+            src: ["sounds/background.mp3"],
             loop: true,
-            volume: 0.5
+            volume: 0.1
         })
     );
 
     const match = useRef(
         new Howl({
-            src: ["/sounds/match.mp3"],
+            src: ["sounds/match.mp3"],
             loop: true,
-            volume: 0.6
+            volume: 0.1
         })
     );
 
     const win = useRef(
         new Howl({
-            src: ["/sounds/win.mp3"],
+            src: ["sounds/win.mp3"],
             volume: 1.0
         })
     );

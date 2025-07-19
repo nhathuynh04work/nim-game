@@ -27,14 +27,16 @@ function ExitModal({ onClose, onSaveAndExit }) {
                     <p>Do you want to save the game before exiting?</p>
 
                     <ButtonGroup className="self-end w-full">
+                        {/* Discard Button */}
                         <Button
-                            className="w-1/3 py-3 
-                   border border-zinc-400 text-zinc-700 
-                   bg-transparent 
-                   hover:border-red-700 hover:bg-red-700 hover:text-white 
-                   dark:border-zinc-600 dark:text-zinc-200 
-                   dark:hover:bg-red-700 dark:hover:text-white 
-                   transition-colors duration-200"
+                            className="
+            w-1/3 py-2
+            border border-indigo-600 text-indigo-600
+            hover:shadow-[0_0_12px_rgba(99,102,241,0.4)]
+            dark:border-indigo-400 dark:text-indigo-400
+            dark:hover:shadow-[0_0_12px_rgba(129,140,248,0.5)]
+            transition-all duration-200
+        "
                             onClick={() => {
                                 navigate("/");
                                 localStorage.removeItem("savedMatch");
@@ -42,14 +44,19 @@ function ExitModal({ onClose, onSaveAndExit }) {
                         >
                             Discard
                         </Button>
+
+                        {/* Save and Exit Button */}
                         <Button
-                            className="w-2/3 py-3 
-                   border border-zinc-400 text-zinc-700 
-                   bg-transparent 
-                   hover:border-green-700 hover:bg-green-700 hover:text-white 
-                   dark:border-zinc-600 dark:text-zinc-200 
-                   dark:hover:bg-green-700 dark:hover:text-white 
-                   transition-colors duration-200"
+                            className="
+            w-2/3 py-2
+            bg-indigo-600 text-white 
+            hover:bg-indigo-700
+            hover:shadow-[0_0_12px_rgba(99,102,241,0.5)]
+            dark:bg-indigo-500 
+            dark:hover:bg-indigo-400 
+            dark:hover:shadow-[0_0_12px_rgba(129,140,248,0.6)]
+            transition-all duration-200
+        "
                             onClick={onSaveAndExit}
                         >
                             Save and Exit

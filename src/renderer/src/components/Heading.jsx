@@ -1,5 +1,5 @@
-function Heading({ children }) {
-    return <h1 className="text-4xl font-extralight">{children}</h1>;
+function Heading({ children, className }) {
+    return <h1 className={`text-4xl font-light ${className}`}>{children}</h1>;
 }
 
 export default Heading;

@@ -2,20 +2,20 @@ import { NavLink } from "react-router";
 
 const menu = [
     {
-        title: "Overview",
-        to: "/documentation/overview"
+        title: "History",
+        to: "/documentation/history"
     },
     {
         title: "Rules",
         to: "/documentation/rules"
     },
     {
-        title: "Demo",
-        to: "/documentation/demo"
+        title: "Mathematics",
+        to: "/documentation/mathematics"
     },
     {
-        title: "FAQs",
-        to: "/documentation/faqs"
+        title: "Demo",
+        to: "/documentation/demo"
     },
     {
         title: "Credits",

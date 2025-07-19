@@ -11,9 +11,7 @@ function SidebarMainLayout() {
             <Sidebar />
             <div className="flex-1 bg-white dark:bg-[#1c1e24] flex overflow-hidden">
                 <DecorationColumn />
-                <div className="flex-1 p-12 overflow-auto">
-                    <Outlet />
-                </div>
+                <Outlet />
                 <DecorationColumn />
             </div>
         </div>

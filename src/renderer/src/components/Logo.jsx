@@ -28,7 +28,7 @@ function Logo({ onClick, disabled }) {
                 data-tooltip-content={isDisabled ? disabled : undefined}
             >
                 <img
-                    src={isDarkMode ? "/icons/logo-dark.svg" : "/icons/logo-light.svg"}
+                    src={isDarkMode ? "icons/logo-dark.svg" : "icons/logo-light.svg"}
                     alt="Logo"
                     width="32"
                     height="32"

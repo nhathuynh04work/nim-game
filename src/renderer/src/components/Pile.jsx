@@ -1,7 +1,14 @@
 import { disabledReason } from "../variables";
 import ObjectComponent from "./ObjectComponent";
 
-function Pile({ pileIndex, numObjects, selectedObjectIndex, onSelect, disabled }) {
+function Pile({
+    pileIndex,
+    numObjects,
+    selectedObjectIndex,
+    onSelect,
+    disabled,
+    highlightPosition
+}) {
     const isDisabled = disabled !== disabledReason.NONE;
 
     return (
@@ -18,6 +25,11 @@ function Pile({ pileIndex, numObjects, selectedObjectIndex, onSelect, disabled }
                     isSelected={selectedObjectIndex !== null && index >= selectedObjectIndex}
                     onClick={() => onSelect(pileIndex, index)}
                     disabled={disabled}
+                    highlighted={
+                        pileIndex === highlightPosition?.pileIndex &&
+                        index === highlightPosition?.objectIndex &&
+                        true
+                    }
                 />
             ))}
         </div>

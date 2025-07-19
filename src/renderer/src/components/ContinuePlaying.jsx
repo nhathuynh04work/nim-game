@@ -13,6 +13,9 @@ function ContinuePlaying({ savedMatch, setSavedMatch }) {
         navigate("/match", {
             state: { ...savedMatch }
         });
+
+        localStorage.removeItem("savedMatch");
+        setSavedMatch(null);
     };
 
     const handleDiscard = () => {
@@ -65,10 +68,10 @@ function ContinuePlaying({ savedMatch, setSavedMatch }) {
                                 : player2
                         }
                         disabled={true}
-                        className={`${
+                        className={`transition-colors duration-200 ${
                             activePlayer === player2
-                                ? "border border-green-600 font-semibold bg-green-50 dark:bg-green-900/30"
-                                : ""
+                                ? "border border-indigo-300 font-semibold bg-indigo-50 dark:bg-indigo-900/30"
+                                : "border border-zinc-300 dark:border-zinc-700"
                         }`}
                     />
                 </div>
@@ -80,7 +83,7 @@ function ContinuePlaying({ savedMatch, setSavedMatch }) {
             <div className="w-full flex justify-between items-center gap-8">
                 <div className="flex flex-col gap-2 flex-1">
                     <label htmlFor="time-limit-select" className="text-[10px]">
-                        Time limit
+                        Time left
                     </label>
                     <TimerBar time={time} timeLimit={timeLimit} />
                 </div>
@@ -93,15 +96,15 @@ function ContinuePlaying({ savedMatch, setSavedMatch }) {
                 </div>
             </div>
 
-            <div className="flex gap-1 items-center">
+            <div className="flex gap-4 items-center">
                 <Button
                     className="w-1/4 mt-20 py-3 
-                   border border-zinc-400 text-zinc-700 
-                   bg-transparent 
-                   hover:border-red-700 hover:bg-red-700 hover:text-white 
-                   dark:border-zinc-600 dark:text-zinc-200 
-                   dark:hover:bg-red-700 dark:hover:text-white 
-                   transition-colors duration-200"
+                                border border-indigo-600 text-indigo-600  
+                                hover:shadow-[0_0_12px_rgba(99,102,241,0.5)]
+                                dark:border-indigo-400 dark:text-indigo-400  
+                                dark:hover:shadow-[0_0_12px_rgba(129,140,248,0.6)]
+                                bg-transparent
+                                transition-all duration-200"
                     onClick={handleDiscard}
                 >
                     Discard
@@ -109,12 +112,13 @@ function ContinuePlaying({ savedMatch, setSavedMatch }) {
 
                 <Button
                     className="w-3/4 mt-20 py-3 
-                   border border-zinc-400 text-zinc-700 
-                   bg-transparent 
-                   hover:border-green-700 hover:bg-green-700 hover:text-white 
-                   dark:border-zinc-600 dark:text-zinc-200 
-                   dark:hover:bg-green-700 dark:hover:text-white 
-                   transition-colors duration-200"
+                bg-indigo-600 text-white 
+                            hover:bg-indigo-700 
+                            hover:shadow-[0_0_12px_rgba(99,102,241,0.5)]
+                            dark:bg-indigo-500 
+                            dark:hover:bg-indigo-400 
+                            dark:hover:shadow-[0_0_12px_rgba(129,140,248,0.6)]
+                            transition-all duration-200"
                     onClick={handleContinue}
                 >
                     Continue Playing
