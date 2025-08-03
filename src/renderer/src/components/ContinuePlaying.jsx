@@ -4,6 +4,8 @@ import Button from "./Button";
 import InputText from "./InputText";
 import ModeToggle from "./ModeToggle";
 import TimerBar from "./TimerBar";
+import { TrashIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
+import toast, { Toaster } from "react-hot-toast";
 
 function ContinuePlaying({ savedMatch, setSavedMatch }) {
     const navigate = useNavigate();
@@ -27,8 +29,29 @@ function ContinuePlaying({ savedMatch, setSavedMatch }) {
         }
     };
 
+    const handleSaveToFile = async () => {
+        const saved = localStorage.getItem("savedMatch");
+        if (!saved) return;
+
+        try {
+            const result = await window.api.saveMatchToFile(saved);
+
+            if (result?.success) {
+                toast.success("Match saved to file system!");
+            } else if (result?.canceled) {
+                toast("Save canceled.");
+            } else {
+                toast.error("Failed to save match.");
+            }
+        } catch (error) {
+            console.error("Save failed:", error);
+            toast.error("Something went wrong.");
+        }
+    };
+
     return (
         <div className="w-full mt-16 rounded-md border border-zinc-300 bg-zinc-100 p-10 text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 relative">
+            <Toaster />
             <span className="absolute -top-3 left-3 text-xs px-2 py-0.5 rounded-sm bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200">
                 Saved Match
             </span>
@@ -98,20 +121,35 @@ function ContinuePlaying({ savedMatch, setSavedMatch }) {
 
             <div className="flex gap-4 items-center">
                 <Button
-                    className="w-1/4 mt-20 py-3 
+                    onClick={handleDiscard}
+                    title="Discard Match"
+                    className="w-12 h-12 mt-20 flex items-center justify-center
                                 border border-indigo-600 text-indigo-600  
                                 hover:shadow-[0_0_12px_rgba(99,102,241,0.5)]
                                 dark:border-indigo-400 dark:text-indigo-400  
                                 dark:hover:shadow-[0_0_12px_rgba(129,140,248,0.6)]
                                 bg-transparent
                                 transition-all duration-200"
-                    onClick={handleDiscard}
                 >
-                    Discard
+                    <TrashIcon className="w-8 h-8" />
                 </Button>
 
                 <Button
-                    className="w-3/4 mt-20 py-3 
+                    onClick={handleSaveToFile}
+                    title="Save Match to File"
+                    className="w-12 h-12 mt-20 flex items-center justify-center
+                                border border-indigo-600 text-indigo-600  
+                                hover:shadow-[0_0_12px_rgba(99,102,241,0.5)]
+                                dark:border-indigo-400 dark:text-indigo-400  
+                                dark:hover:shadow-[0_0_12px_rgba(129,140,248,0.6)]
+                                bg-transparent
+                                transition-all duration-200"
+                >
+                    <DocumentTextIcon className="w-8 h-8" />
+                </Button>
+
+                <Button
+                    className="flex-1 mt-20 py-3 
                 bg-indigo-600 text-white 
                             hover:bg-indigo-700 
                             hover:shadow-[0_0_12px_rgba(99,102,241,0.5)]

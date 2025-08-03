@@ -1,7 +1,14 @@
-import { app, shell, BrowserWindow, ipcMain, screen } from "electron";
+import { app, shell, BrowserWindow, ipcMain, screen, dialog } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
+import path from "path";
+import { fileURLToPath } from "url";
+import { writeFile } from "fs/promises";
+
+// __dirname workaround for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function createWindow() {
     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -20,6 +27,7 @@ function createWindow() {
             : {}),
         webPreferences: {
             preload: join(__dirname, "../preload/index.js"),
+            contextIsolation: true,
             sandbox: false
         }
     });
@@ -63,6 +71,33 @@ app.whenReady().then(() => {
 
     // IPC test
     ipcMain.on("ping", () => console.log("pong"));
+
+    // Save saved match to file system
+    ipcMain.handle("save-match-to-file", async (_event, savedMatchJson) => {
+        const now = new Date();
+        const formatted = now
+            .toISOString()
+            .replace(/T/, "_")
+            .replace(/:/g, "-")
+            .replace(/\..+/, "");
+        const defaultName = `nim-${formatted}.json`;
+
+        const { canceled, filePath } = await dialog.showSaveDialog({
+            title: "Save Match",
+            defaultPath: defaultName,
+            filters: [{ name: "JSON Files", extensions: ["json"] }]
+        });
+
+        if (canceled || !filePath) return { success: false, canceled: true };
+
+        try {
+            await writeFile(filePath, savedMatchJson);
+            return { success: true, filePath };
+        } catch (err) {
+            console.error("Failed to save file:", err);
+            return { success: false, error: err.message };
+        }
+    });
 
     ipcMain.handle("open-external", async (_event, url) => {
         await shell.openExternal(url);

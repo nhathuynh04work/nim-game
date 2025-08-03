@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Heading from "../components/Heading";
 import GameSetup from "../components/GameSetup";
 import ContinuePlaying from "../components/ContinuePlaying";
+import Button from "../components/Button";
+import { DocumentTextIcon } from "@heroicons/react/16/solid";
 
 function GamePage() {
     const [savedMatch, setSavedMatch] = useState(null);
