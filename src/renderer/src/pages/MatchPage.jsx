@@ -1,7 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
 import { useEffect, useMemo, useState } from "react";
-
-// Components
 import Player from "../components/Player";
 import GameArea from "../components/GameArea";
 import ProgressBar from "../components/ProgressBar";
@@ -10,22 +8,14 @@ import ExitModal from "../components/ExitModal";
 import Overlay from "../components/Overlay";
 import TopBar from "../components/TopBar";
 import Button from "../components/Button";
-
-// Assets
 import robot from "../assets/images/character_robot_interact.png";
 import zombie from "../assets/images/character_zombie_drag.png";
-
-// Helpers
 import getRandomNumber from "../helpers/getRandomNumber";
 import getRandomArray from "../helpers/getRandomArray";
 import saveMatchResult from "../helpers/saveMatchResult";
 import saveCurrentMatchState from "../helpers/saveCurrentMatchState";
 import getOptimalMove from "../helpers/getOptimalMove";
-
-// Icons
 import { XMarkIcon } from "@heroicons/react/16/solid";
-
-// Context
 import { useAudio } from "../provider/AudioProvider";
 
 function MatchPage() {
@@ -45,7 +35,9 @@ function MatchPage() {
         time: savedTime,
         originalPiles: savedOriginalPiles,
         selectedPileIndex: savedSelectedPileIndex,
-        selectedObjectIndex: savedSelectedObjectIndex
+        selectedObjectIndex: savedSelectedObjectIndex,
+        helpPlayer1: savedHelpPlayer1,
+        helpPlayer2: savedHelpPlayer2
     } = state;
 
     // Match state
@@ -69,13 +61,14 @@ function MatchPage() {
     );
 
     // Help feature state
-    const [helpPlayer1, setHelpPlayer1] = useState(3);
-    const [helpPlayer2, setHelpPlayer2] = useState(3);
+    const [helpPlayer1, setHelpPlayer1] = useState(savedHelpPlayer1 ?? 3);
+    const [helpPlayer2, setHelpPlayer2] = useState(savedHelpPlayer2 ?? 3);
     const [highlightPosition, setHighlightPosition] = useState(null);
 
-    // Lifecycle hooks
+    // Play match sound
     useEffect(() => playMatch(), []);
 
+    // Countdown before match starts
     useEffect(() => {
         if (countdown > -1) {
             const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
@@ -85,6 +78,7 @@ function MatchPage() {
         }
     }, [countdown]);
 
+    // Every time the piles change, check if there's a winner
     useEffect(() => {
         if (piles.length === 0) {
             setWinner(activePlayer);
@@ -119,7 +113,9 @@ function MatchPage() {
             difficulty,
             originalPiles,
             selectedPileIndex,
-            selectedObjectIndex
+            selectedObjectIndex,
+            helpPlayer1,
+            helpPlayer2
         });
         navigate("/");
     };
@@ -158,7 +154,7 @@ function MatchPage() {
                 className="grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr_auto] w-full h-dvh bg-[#f7f6f9] dark:bg-zinc-900"
                 style={{ height: "calc(100vh - 64px)" }}
             >
-                {/* Left Player */}
+                {/* Player 1: Avatar and help button */}
                 <div className="row-span-2 col-start-1 flex flex-col items-center justify-center self-start">
                     <Player
                         name={player1}
@@ -181,7 +177,7 @@ function MatchPage() {
                     )}
                 </div>
 
-                {/* Top Progress Bar */}
+                {/* Player 1: Progress Bar */}
                 <div className="row-start-1 col-start-2 col-span-2">
                     <ProgressBar
                         isActive={activePlayer === player1}
@@ -216,7 +212,7 @@ function MatchPage() {
                     />
                 </div>
 
-                {/* Bottom Progress Bar */}
+                {/* Player 2: Progress Bar */}
                 <div className="row-start-3 col-start-1 col-span-2">
                     <ProgressBar
                         isActive={activePlayer === player2}
@@ -229,7 +225,7 @@ function MatchPage() {
                     />
                 </div>
 
-                {/* Right Player */}
+                {/* Player 2: Avatar and help button */}
                 <div className="row-span-2 col-start-3 row-start-2 flex flex-col items-center justify-center self-end">
                     {activePlayer === player2 && mode !== "vsComputer" && helpPlayer2 > 0 && (
                         <Button

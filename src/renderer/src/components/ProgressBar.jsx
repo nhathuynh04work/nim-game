@@ -4,7 +4,6 @@ import { formatTime } from "../helpers/formatTime";
 // Handle ticking time
 function ProgressBar({ side, isActive, time, setTime, timeLimit, color, paused }) {
     useEffect(() => {
-        console.log(time, timeLimit, !isActive, paused);
         if (!isActive || time <= 0 || paused) return;
 
         const timer = setInterval(() => {

@@ -1,30 +1,4 @@
-function saveCurrentMatchState({
-    player1,
-    player2,
-    piles,
-    activePlayer,
-    time,
-    timeLimit,
-    mode,
-    difficulty,
-    originalPiles,
-    selectedPileIndex,
-    selectedObjectIndex
-}) {
-    const state = {
-        player1,
-        player2,
-        piles,
-        activePlayer,
-        time,
-        timeLimit,
-        mode,
-        difficulty,
-        originalPiles,
-        selectedPileIndex,
-        selectedObjectIndex
-    };
-
+function saveCurrentMatchState(state) {
     try {
         localStorage.setItem("savedMatch", JSON.stringify(state));
         console.log("Match state saved successfully.");
