@@ -14,10 +14,10 @@ export default function DynamicTitle() {
                 location.state?.mode === "vsComputer" ? "Play with Computer" : "Play with Player",
             "/statistics": "Statistics",
             "/documentation": "Documentation",
-            "/documentation/overview": "Overview",
+            "/documentation/history": "History",
             "/documentation/rules": "Rules",
             "/documentation/demo": "Demo",
-            "/documentation/faqs": "FAQs",
+            "/documentation/mathematics": "Mathematics",
             "/documentation/credits": "Credits",
             "/documentation/author": "About the Author"
         };

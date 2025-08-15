@@ -6,19 +6,23 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { writeFile } from "fs/promises";
 
-// __dirname workaround for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Declare mainWindow globally
+let mainWindow;
+let isQuitting = false; // Add this flag to prevent infinite loop
 
 function createWindow() {
     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width,
         height,
+        minWidth: width,
+        minHeight: height,
         show: false,
-        resizable: false,
         autoHideMenuBar: true,
         ...(process.platform === "linux"
             ? {
@@ -31,8 +35,6 @@ function createWindow() {
             sandbox: false
         }
     });
-
-    mainWindow.setAlwaysOnTop(true, "screen");
 
     mainWindow.on("ready-to-show", () => {
         mainWindow.maximize();
@@ -69,9 +71,6 @@ app.whenReady().then(() => {
         optimizer.watchWindowShortcuts(window);
     });
 
-    // IPC test
-    ipcMain.on("ping", () => console.log("pong"));
-
     // Save saved match to file system
     ipcMain.handle("save-match-to-file", async (_event, savedMatchJson) => {
         const now = new Date();
@@ -103,6 +102,14 @@ app.whenReady().then(() => {
         await shell.openExternal(url);
     });
 
+    // Handle the confirmation from renderer
+    ipcMain.on("game-state-saved", () => {
+        console.log("Game state saved successfully");
+        // Set the flag and quit for real this time
+        isQuitting = true;
+        app.quit();
+    });
+
     createWindow();
 
     app.on("activate", function () {
@@ -110,6 +117,33 @@ app.whenReady().then(() => {
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
+});
+
+// Handle app closing
+app.on("before-quit", async (event) => {
+    const currentURL = new URL(mainWindow.webContents.getURL());
+    const currentRoute = currentURL.hash.substring(2);
+
+    // If we're currently not in a match, don't do anything
+    if (currentRoute !== "match") return;
+
+    // If we're already in the process of quitting, don't prevent it
+    if (isQuitting) {
+        return;
+    }
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        event.preventDefault(); // prevent immediate quit
+
+        try {
+            // Send message to renderer to save game state
+            mainWindow.webContents.send("save-game-state");
+        } catch (error) {
+            console.log("Error saving game state: ", error);
+            isQuitting = true;
+            app.quit();
+        }
+    }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

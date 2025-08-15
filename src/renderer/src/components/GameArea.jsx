@@ -25,15 +25,21 @@ function GameArea({
     highlightPosition,
     setHighlightPosition
 }) {
+    // Get the information regarding how many objects from which pile to remove automatically
+    // This function is for the computer's move and when the timer runs out
     const getAutomaticMove = (difficulty = "easy") => {
-        if (isComputerTurn && difficulty === "hard") {
-            return getOptimalMove(piles);
+        // Computer's move
+        if (isComputerTurn) {
+            if (difficulty === "hard") {
+                return getOptimalMove(piles);
+            } else if (difficulty === "easy") {
+                const pileIndex = getRandomNumber(0, piles.length - 1);
+                const objectIndex = getRandomNumber(0, piles[pileIndex] - 1);
+                return { pileIndex, objectIndex };
+            }
         }
-        if (isComputerTurn && difficulty === "easy") {
-            const pileIndex = getRandomNumber(0, piles.length - 1);
-            const objectIndex = getRandomNumber(0, piles[pileIndex] - 1);
-            return { pileIndex, objectIndex };
-        }
+
+        // Default to remove 1 object from the first pile
         return { pileIndex: 0, objectIndex: piles[0] - 1 };
     };
 
@@ -90,7 +96,8 @@ function GameArea({
     useEffect(() => {
         if (!isComputerTurn) return;
 
-        setDisabled(disabledReason.COMPUTER);
+        // don't need to re-disable
+        if (disabled === disabledReason.NONE) setDisabled(disabledReason.COMPUTER);
 
         if (time == timeLimit - 2 && (selectedPileIndex == null || selectedObjectIndex == null)) {
             const { pileIndex, objectIndex } = getAutomaticMove(difficulty);
@@ -99,7 +106,6 @@ function GameArea({
         }
 
         if (time == timeLimit - 4) {
-            // Takes another 2 seconds to remove the objects
             removeSelectedObjects(selectedPileIndex, selectedObjectIndex);
             resetSelected();
             setDisabled(disabledReason.NONE);
@@ -108,7 +114,8 @@ function GameArea({
 
     // When piles updated, switch turn and reset selected
     useEffect(() => {
-        if (arraysEqual(piles, initialPiles) || piles.length === 0) return; // for initial render
+        // This if statement prevents the app from switching turn on the initial render and when the match ends
+        if (arraysEqual(piles, initialPiles) || piles.length === 0) return;
 
         setHighlightPosition(null);
         resetSelected();

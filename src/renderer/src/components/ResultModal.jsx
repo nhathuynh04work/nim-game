@@ -3,7 +3,7 @@ import ButtonGroup from "../layouts/ButtonGroup";
 import Button from "./Button";
 import Overlay from "./Overlay";
 
-function ResultModal({ winner, mode }) {
+function ResultModal({ winner }) {
     const navigate = useNavigate();
 
     return (
@@ -23,19 +23,11 @@ function ResultModal({ winner, mode }) {
 
                 {/* Body */}
                 <div className="p-4 flex flex-col gap-6">
-                    {mode === "vsComputer" ? (
-                        <p>
-                            Sorry!{" "}
-                            <span className="font-semibold dark:text-indigo-300">Computer</span>{" "}
-                            won. Good luck next time!
-                        </p>
-                    ) : (
-                        <p>
-                            Congratulations to{" "}
-                            <span className="font-semibold dark:text-indigo-300">{winner}</span>!
-                            You won!
-                        </p>
-                    )}
+                    <p>
+                        Congratulations to{" "}
+                        <span className="font-semibold dark:text-indigo-300">{winner}</span>! You
+                        won!
+                    </p>
 
                     <ButtonGroup className="w-full">
                         {/* Home Button */}

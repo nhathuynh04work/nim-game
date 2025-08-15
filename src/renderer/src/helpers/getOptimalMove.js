@@ -1,18 +1,16 @@
+import calculateNimSum from "./calculateNimSum";
+
 export default function getOptimalMove(piles) {
-    let pileIndex = 0,
-        objectIndex = piles[0] - 1;
+    const nimSum = calculateNimSum(piles);
 
-    // Calculate NIM sum
-    const nimSum = piles.reduce((acc, cur) => acc ^ cur, 0);
-
-    piles.forEach((currentSize, index) => {
+    for (let i = 0; i < piles.length; i++) {
+        const currentSize = piles[i];
         const desiredSize = nimSum ^ currentSize;
 
         if (desiredSize < currentSize) {
-            pileIndex = index;
-            objectIndex = desiredSize;
+            return { pileIndex: i, objectIndex: desiredSize };
         }
-    });
+    }
 
-    return { pileIndex, objectIndex };
+    return { pileIndex: 0, objectIndex: piles[0] - 1 };
 }

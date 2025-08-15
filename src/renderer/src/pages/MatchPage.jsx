@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Player from "../components/Player";
 import GameArea from "../components/GameArea";
 import ProgressBar from "../components/ProgressBar";
@@ -49,9 +49,9 @@ function MatchPage() {
     );
 
     const initialPiles = useMemo(() => savedPiles ?? getRandomArray(10, 20, 1, 5), []);
-
     const [piles, setPiles] = useState([...initialPiles]);
     const [originalPiles] = useState(savedOriginalPiles ?? [...initialPiles]);
+
     const [time, setTime] = useState(savedTime ?? timeLimit);
     const [winner, setWinner] = useState(null);
     const [showExitModal, setShowExitModal] = useState(false);
@@ -64,6 +64,59 @@ function MatchPage() {
     const [helpPlayer1, setHelpPlayer1] = useState(savedHelpPlayer1 ?? 3);
     const [helpPlayer2, setHelpPlayer2] = useState(savedHelpPlayer2 ?? 3);
     const [highlightPosition, setHighlightPosition] = useState(null);
+
+    // Refs to store current values for IPC handler
+    const currentStateRef = useRef();
+
+    // Update ref whenever state changes, don't need dependency array
+    // because this is a cheap calculation and the current match state need to be update all the time
+    useEffect(() => {
+        currentStateRef.current = {
+            player1,
+            player2,
+            piles,
+            activePlayer,
+            time,
+            timeLimit,
+            mode,
+            difficulty,
+            originalPiles,
+            selectedPileIndex,
+            selectedObjectIndex,
+            helpPlayer1,
+            helpPlayer2
+        };
+    });
+
+    // Set up IPC listener for save request from main process
+    useEffect(() => {
+        const handleSaveRequest = () => {
+            if (winner || !hasStarted) {
+                // No need to save, just confirm
+                window.api.confirmGameStateSaved();
+                return;
+            }
+
+            try {
+                saveCurrentMatchState(currentStateRef.current);
+                console.log("Match state saved successfully via IPC");
+                window.api.confirmGameStateSaved();
+            } catch (error) {
+                console.error("Failed to save match state:", error);
+                // Still confirm to allow app to close
+                window.api.confirmGameStateSaved();
+            }
+        };
+
+        window.api.onSaveGameState(handleSaveRequest);
+
+        // Cleanup
+        return () => {
+            if (window.api?.removeAllListeners) {
+                window.api.removeAllListeners("save-game-state");
+            }
+        };
+    }, [winner, hasStarted]);
 
     // Play match sound
     useEffect(() => playMatch(), []);
@@ -94,13 +147,14 @@ function MatchPage() {
         }
     }, [piles]);
 
-    // Helper functions
+    // Change the active player and reset the timer
     const switchTurn = () => {
         if (piles.length === 0) return;
         setActivePlayer((cur) => (cur === player1 ? player2 : player1));
         setTime(timeLimit);
     };
 
+    // Save and exit
     const saveAndExit = () => {
         saveCurrentMatchState({
             player1,
@@ -120,6 +174,7 @@ function MatchPage() {
         navigate("/");
     };
 
+    // Highlight suggested move
     const highlightSuggestedMove = () => {
         const { pileIndex, objectIndex } = getOptimalMove(piles);
         setHighlightPosition({ pileIndex, objectIndex });
@@ -140,7 +195,7 @@ function MatchPage() {
     if (winner) {
         return (
             <div className="w-screen h-screen bg-[#f7f6f9] dark:bg-zinc-900">
-                <ResultModal winner={winner} mode={mode} />
+                <ResultModal winner={winner} />
             </div>
         );
     }

@@ -6,6 +6,15 @@ const api = {
     openExternal: (url) => ipcRenderer.invoke("open-external", url),
     saveMatchToFile: async (data) => {
         return await ipcRenderer.invoke("save-match-to-file", data);
+    },
+    onSaveGameState: (callback) => {
+        ipcRenderer.on("save-game-state", callback);
+    },
+    confirmGameStateSaved: () => {
+        ipcRenderer.send("game-state-saved");
+    },
+    removeAllListeners: (channel) => {
+        ipcRenderer.removeAllListeners(channel);
     }
 };
 

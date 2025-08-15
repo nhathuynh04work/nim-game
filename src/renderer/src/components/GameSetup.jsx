@@ -60,7 +60,7 @@ function GameSetup() {
 
     const [mode, setMode] = useState("vsComputer");
     const [player1, setPlayer1] = useState("Player 1");
-    const [player2, setPlayer2] = useState(mode === "vsComputer" ? "Computer" : "Player 2");
+    const [player2, setPlayer2] = useState("Computer");
     const [difficulty, setDifficulty] = useState("easy");
     const [timeLimit, setTimeLimit] = useState("15");
 
